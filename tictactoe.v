@@ -12,24 +12,24 @@ module Temporizer(
 	input mouseBotton,
 	
 	//State of each of the cells
-    output [1:0] topLeft,
-	output [1:0] topCenter,
-	output [1:0] topRight,
-	output [1:0] middleLeft,
-	output [1:0] middleCenter,
-	output [1:0] middleRight,
-	output [1:0] bottonLeft,
-	output [1:0] bottonCenter,
-	output [1:0] bottonRight,
+   output reg [1:0] topLeft,
+	output reg [1:0] topCenter,
+	output reg [1:0] topRight,
+	output reg [1:0] middleLeft,
+	output reg [1:0] middleCenter,
+	output reg [1:0] middleRight,
+	output reg [1:0] bottonLeft,
+	output reg [1:0] bottonCenter,
+	output reg [1:0] bottonRight,
 	//Current State
 	output [2:0] state,
 	
 	//Score of each player
-	output [6:0] xScore,
-	output [6:0] OScore,
+	output reg [6:0] xScore,
+	output reg [6:0] OScore,
 	
 	//Current option for the buttons
-	output selectedOption
+	output reg selectedOption
     );
 	
 assign state = estado_actual;
@@ -44,9 +44,9 @@ assign state = estado_actual;
 */
 localparam [2:0] START  = 0,//No play has been made, a message is displayed
                  XsTurn = 1,//Xs Current Turn
-				 OsTurn = 2,//Os Current Turn
-				 Tie    = 3,//The game has finished in a Tie between O & X
-				 XWins  = 4,//The game has been won by X
+				     OsTurn = 2,//Os Current Turn
+				     Tie    = 3,//The game has finished in a Tie between O & X
+				     XWins  = 4,//The game has been won by X
                  OWins  = 5;//The game has been won by O
 				 
 				 
@@ -76,7 +76,7 @@ wire    Owins;
 reg  [3:0] Moves = 0;//Use to check if there's a tie
 
 
-Wins WinChecker(
+WinChecker Wins(
 	//State of each of the cells
     .topLeft(topLeft),
 	.topCenter(topCenter),
@@ -86,7 +86,7 @@ Wins WinChecker(
 	.middleRight(middleRight),
 	.bottonLeft(bottonLeft),
 	.bottonCenter(bottonCenter),
-	.bottonRight(bottonRight)
+	.bottonRight(bottonRight),
 	
 	//Current state of each player
 	.Xwins(Xwins),
@@ -139,7 +139,7 @@ always @(posedge clk) begin
 	if(!cambio_FinalizadoMouse) begin
 		//After the game is done, any clicks makes a new game
 		if((state == Tie) || (state == XWins) || (state == OWins)) begin
-			state = START;
+			estado_siguiente = START;
 		end
 		
 		//When the game is running it checks for entries on the symbols
@@ -147,148 +147,139 @@ always @(posedge clk) begin
 			if(topLeft == 0) begin
 				if((state == XsTurn) && (state == START)) begin
 					topLeft = 1;
-					state = OsTurn;
+					estado_siguiente = OsTurn;
 					Moves = Moves + 1;
 				end
 				else if(state == OsTurn) begin
 					topLeft = 2;
-					state = XsTurn;
+					estado_siguiente = XsTurn;
 					Moves = Moves + 1;
 				end
-				CurrentPlayer = ~CurrentPlayer;
 			end
 		end
 		
 		else if ((mouseX >= (playBoardLeft + CharSpace + playBoardBarWidth)) && (mouseX <= (playBoardLeft + 2*CharSpace + playBoardBarWidth)) && (mouseY >= playBoardTop) && (mouseY <= (playBoardTop + CharSpace)) ) begin// Top center character
 			if(topCenter == 0) begin
-				if((state == XsTurn) && (state == START))
+				if((state == XsTurn) && (state == START)) begin
 					topCenter = 1;
-					state = OsTurn;
+					estado_siguiente = OsTurn;
 					Moves = Moves + 1;
 				end
 				else if(state == OsTurn) begin
 					topCenter = 2;
-					state = XsTurn;
+					estado_siguiente = XsTurn;
 					Moves = Moves + 1;
 				end
-				CurrentPlayer = ~CurrentPlayer;
 			end
 		end
 		
 		else if ((mouseX >= (playBoardLeft + 2*CharSpace + 2*playBoardBarWidth)) && (mouseX <= (playBoardLeft + 3*CharSpace + 2*playBoardBarWidth)) && (mouseY >= playBoardTop) && (mouseY <= (playBoardTop + CharSpace)) ) begin// Top right character
 			if(topRight == 0) begin
-				if((state == XsTurn) && (state == START))
+				if((state == XsTurn) && (state == START)) begin
 					topRight = 1;
-					state = OsTurn;
+					estado_siguiente = OsTurn;
 					Moves = Moves + 1;
 				end
 				else if(state == OsTurn) begin
 					topRight = 2;
-					state = XsTurn;
+					estado_siguiente = XsTurn;
 					Moves = Moves + 1;
 				end
-				CurrentPlayer = ~CurrentPlayer;
 			end
 		end
 		
 		else if ((mouseX >= playBoardLeft) && (mouseX <= (playBoardLeft + CharSpace)) && (mouseY >= (playBoardTop + CharSpace + playBoardBarWidth)) && (mouseY <= (playBoardTop + 2*CharSpace + playBoardBarWidth)) ) begin// Middle left character
 			if(middleLeft == 0) begin
-				if((state == XsTurn) && (state == START))
+				if((state == XsTurn) && (state == START)) begin
 					middleLeft = 1;
-					state = OsTurn;
+					estado_siguiente = OsTurn;
 					Moves = Moves + 1;
 				end
 				else if(state == OsTurn) begin
 					middleLeft = 2;
-					state = XsTurn;
+					estado_siguiente = XsTurn;
 					Moves = Moves + 1;
 				end
-				CurrentPlayer = ~CurrentPlayer;
 			end
 		end
 		
 		else if ((mouseX >= (playBoardLeft + CharSpace + playBoardBarWidth)) && (mouseX <= (playBoardLeft + 2*CharSpace + playBoardBarWidth)) && (mouseY >= (playBoardTop + CharSpace + playBoardBarWidth)) && (mouseY <= (playBoardTop + 2*CharSpace + playBoardBarWidth)) ) begin// Middle center character
 			if(middleCenter == 0) begin
-				if((state == XsTurn) && (state == START))
+				if((state == XsTurn) && (state == START)) begin
 					middleCenter = 1;
-					state = OsTurn;
+					estado_siguiente = OsTurn;
 					Moves = Moves + 1;
 				end
 				else if(state == OsTurn) begin
 					middleCenter = 2;
-					state = XsTurn;
+					estado_siguiente = XsTurn;
 					Moves = Moves + 1;
 				end
-				CurrentPlayer = ~CurrentPlayer;
 			end
 		end
 		
 		else if ((mouseX >= (playBoardLeft + 2*CharSpace + 2*playBoardBarWidth)) && (mouseX <= (playBoardLeft + 3*CharSpace + 2*playBoardBarWidth)) && (mouseY >= (playBoardTop + CharSpace + playBoardBarWidth)) && (mouseY <= (playBoardTop + 2*CharSpace + playBoardBarWidth)) ) begin// Middle right character
 			if(middleRight == 0) begin
-				if((state == XsTurn) && (state == START))
+				if((state == XsTurn) && (state == START)) begin
 					middleRight = 1;
-					state = OsTurn;
+					estado_siguiente = OsTurn;
 					Moves = Moves + 1;
 				end
 				else if(state == OsTurn) begin
 					middleRight = 2;
-					state = XsTurn;
+					estado_siguiente = XsTurn;
 					Moves = Moves + 1;
 				end
-				CurrentPlayer = ~CurrentPlayer;
 			end
 		end
 		
 		else if ((mouseX >= playBoardLeft) && (mouseX <= (playBoardLeft + CharSpace)) && (mouseY >= (playBoardTop + 2*CharSpace + 2*playBoardBarWidth)) && (mouseY <= (playBoardTop + 3*CharSpace + 2*playBoardBarWidth)) ) begin// Botton left character
 			if(bottonLeft == 0) begin
-				if((state == XsTurn) && (state == START))
+				if((state == XsTurn) && (state == START)) begin
 					bottonLeft = 1;
-					state = OsTurn;
+					estado_siguiente = OsTurn;
 					Moves = Moves + 1;
 				end
 				else if(state == OsTurn) begin
 					bottonLeft = 2;
-					state = XsTurn;
+					estado_siguiente = XsTurn;
 					Moves = Moves + 1;
 				end
-				CurrentPlayer = ~CurrentPlayer;
 			end
 		end
 		
 		else if ((mouseX >= (playBoardLeft + CharSpace + playBoardBarWidth)) && (mouseX <= (playBoardLeft + 2*CharSpace + playBoardBarWidth)) && (mouseY >= (playBoardTop + 2*CharSpace + 2*playBoardBarWidth)) && (mouseY <= (playBoardTop + 3*CharSpace + 2*playBoardBarWidth)) ) begin// Botton center character
 			if(bottonCenter == 0) begin
-				if((state == XsTurn) && (state == START))
+				if((state == XsTurn) && (state == START)) begin
 					bottonCenter = 1;
-					state = OsTurn;
+					estado_siguiente = OsTurn;
 					Moves = Moves + 1;
 				end
 				else if(state == OsTurn) begin
 					bottonCenter = 2;
-					state = XsTurn;
+					estado_siguiente = XsTurn;
 					Moves = Moves + 1;
 				end
-				CurrentPlayer = ~CurrentPlayer;
 			end
 		end
 		
 		else if ((mouseX >= (playBoardLeft + 2*CharSpace + 2*playBoardBarWidth)) && (mouseX <= (playBoardLeft + 3*CharSpace + 2*playBoardBarWidth)) && (mouseY >= (playBoardTop + 2*CharSpace + 2*playBoardBarWidth)) && (mouseY <= (playBoardTop + 3*CharSpace + 2*playBoardBarWidth)) ) begin// Botton right character
 			if(bottonRight == 0) begin
-				if((state == XsTurn) && (state == START))
+				if((state == XsTurn) && (state == START)) begin
 					bottonRight = 1;
-					state = OsTurn;
+					estado_siguiente = OsTurn;
 					Moves = Moves + 1;
 				end
-				else if(state == OsTurn)
+				else if(state == OsTurn) begin
 					bottonRight = 2;
-					state = XsTurn;
+					estado_siguiente = XsTurn;
 					Moves = Moves + 1;
 				end
-				CurrentPlayer = ~CurrentPlayer;
 			end
 		end
 		
 		if(Xwins) begin
-			state = XWins;
+			estado_siguiente = XWins;
 			topLeft      = 0;
 			topCenter    = 0;
 			topRight     = 0;
@@ -302,7 +293,7 @@ always @(posedge clk) begin
 			Moves = 0;
 		end
 		else if(Owins) begin
-			state = OWins;
+			estado_siguiente = OWins;
 			topLeft      = 0;
 			topCenter    = 0;
 			topRight     = 0;
@@ -316,7 +307,7 @@ always @(posedge clk) begin
 			Moves = 0;
 		end
 		else if(Moves == 9) begin
-			state = Tie;
+			estado_siguiente = Tie;
 			topLeft      = 0;
 			topCenter    = 0;
 			topRight     = 0;
@@ -332,7 +323,7 @@ always @(posedge clk) begin
 		
 		cambio_RealizadoMouse = cambio_SolicitadoMouse;//Records that the instruction was recieved
 	end
-			
+	
 	if(!cambio_FinalizadoONOFF) begin //Si se presiona el boton de On OFF
 		if(selectedOption) begin
 			xScore = 0;

@@ -16,26 +16,57 @@ module top(
 	
 	
 
-reg [1:0] topLeft      = 2;
-reg [1:0] topCenter    = 2;
-reg [1:0] topRight     = 2;
-reg [1:0] middleLeft   = 2;
-reg [1:0] middleCenter = 2;
-reg [1:0] middleRight  = 2;
-reg [1:0] bottonLeft   = 2;
-reg [1:0] bottonCenter = 2;
-reg [1:0] bottonRight  = 2;		
+wire [1:0] topLeft;
+wire [1:0] topCenter;
+wire [1:0] topRight;
+wire [1:0] middleLeft;
+wire [1:0] middleCenter;
+wire [1:0] middleRight;
+wire [1:0] bottonLeft;
+wire [1:0] bottonCenter;
+wire [1:0] bottonRight;
 
 wire [2:0] state;
-assign state = 1;
 
-reg [8:0] xScore = 50;
-reg [8:0] yScore = 50;
+wire [8:0] xScore;
+wire [8:0] yScore;
 
-reg selectedOption = 0;
+wire selectedOption;
 
 reg [9:0] mousex = 200;
 reg [9:0] mousey = 400;
+
+Temporizer(
+    .clk(clk),
+    .Boton_izquierda(),
+    .Boton_derecha(),
+    .Boton_onoff(),
+	
+	//input signals from the mouse
+	.mouseX(),
+	.mouseY(),
+	.mouseBotton(),
+	
+	//State of each of the cells
+   .topLeft(topLeft),
+	.topCenter(topCenter),
+	.topRight(topRight),
+	.middleLeft(middleLeft),
+	.middleCenter(middleCenter),
+	.middleRight(middleRight),
+	.bottonLeft(bottonLeft),
+	.bottonCenter(bottonCenter),
+	.bottonRight(bottonRight),
+	//Current State
+	.state(state),
+	
+	//Score of each player
+	.xScore(xScore),
+	.OScore(yScore),
+	
+	//Current option for the buttons
+	.selectedOption(selectedOption)
+    );
 			
 pixel_Gen generator(
 	.topLeft(topLeft),

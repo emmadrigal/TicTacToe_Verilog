@@ -10,11 +10,11 @@ module WinChecker(
 	input [1:0] middleRight,
 	input [1:0] bottonLeft,
 	input [1:0] bottonCenter,
-	input [1:0] bottonRight
+	input [1:0] bottonRight,
 	
 	//Current option for the buttons
-	output wire Xwins,
-	output wire Owins
+	output reg Xwins,
+	output reg Owins
     );
 	
 /*
@@ -43,9 +43,13 @@ wire Fo = (middleRight  == 1);
 wire Go = (bottonLeft   == 1);
 wire Ho = (bottonCenter == 1);
 wire Io = (bottonRight  == 1);
-	
-assign Xwins = (Ax && Bx && Cx) || (Dx && Ex && Fx) || (Gx && Hx && Ix) || (Ax && Dx && Gx) || (Bx && Ex && Hx) || (Cx && Fx && Ix) || (Ax && Ex && Ix) || (Cx && Ex && Gx);
-	
-	
-assign Owins = (Ao && Bo && Co) || (Do && Eo && Fo) || (Go && Ho && Io) || (Ao && Do && Go) || (Bo && Eo && Ho) || (Co && Fo && Io) || (Ao && Eo && Io) || (Co && Eo && Go);
+
+always @* begin
+	Xwins = (Ax && Bx && Cx) || (Dx && Ex && Fx) || (Gx && Hx && Ix) || (Ax && Dx && Gx) || (Bx && Ex && Hx) || (Cx && Fx && Ix) || (Ax && Ex && Ix) || (Cx && Ex && Gx);
+				
+	Owins = (Ao && Bo && Co) || (Do && Eo && Fo) || (Go && Ho && Io) || (Ao && Do && Go) || (Bo && Eo && Ho) || (Co && Fo && Io) || (Ao && Eo && Io) || (Co && Eo && Go);
+
+end
+
+endmodule
 
