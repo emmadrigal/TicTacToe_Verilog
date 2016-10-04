@@ -37,7 +37,7 @@ reg [8:0] numero_x,siguiente_x,numero_y,siguiente_y;
 reg mouseclick, siguiente_mouseclick;
 
 
-//Maquina de estados inici
+//Maquina de estados inicio
 always @(posedge clk,posedge reset)
  if (reset)
 	begin
@@ -51,6 +51,6 @@ always @(posedge clk,posedge reset)
 		estado_actual<=estado_siguiente;
 		numero_x<=siguiente_x;
 		numero_y<=siguiente_y;
-		mouseclick_siguiente_mouseclick;
+		mouseclick<=siguiente_mouseclick;
 	end
 endmodule
