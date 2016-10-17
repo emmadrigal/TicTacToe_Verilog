@@ -1,4 +1,4 @@
-module Chars_rom
+	module Chars_rom
    (
 	input wire [7:0]  character,
     input wire [2:0] columnaY,
@@ -415,6 +415,17 @@ module Chars_rom
 				3'b110: data = 8'b00011000; // 
 				3'b111: data = 8'b00000000; // 
 			endcase
+		else if(character == "'") //:
+			case (columnaY)
+				3'b000: data = 8'b00000000; // 
+				3'b001: data = 8'b00011000; // 
+				3'b010: data = 8'b00011000; // 
+				3'b011: data = 8'b00011000; // 
+				3'b100: data = 8'b00011000; // 
+				3'b101: data = 8'b00000000; // 
+				3'b110: data = 8'b00000000; // 
+				3'b111: data = 8'b00000000; // 
+			endcase
 		else if(character == 94) //Up arrow
 			case (columnaY)
 				3'b000: data = 8'b00000000; // 
@@ -424,6 +435,17 @@ module Chars_rom
 				3'b100: data = 8'b00011000; // 
 				3'b101: data = 8'b00011000; // 
 				3'b110: data = 8'b00011000; // 
+				3'b111: data = 8'b00000000; // 
+			endcase
+		else if(character == 95) //Left Triangle
+			case (columnaY)
+				3'b000: data = 8'b00000000; // 
+				3'b001: data = 8'b01100000; // 
+				3'b010: data = 8'b01111000; // 
+				3'b011: data = 8'b01111110; // 
+				3'b100: data = 8'b01111110; // 
+				3'b101: data = 8'b01111000; // 
+				3'b110: data = 8'b01100000; // 
 				3'b111: data = 8'b00000000; // 
 			endcase
 		//Unrecoginzed Caracter

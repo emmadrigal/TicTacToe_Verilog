@@ -13,8 +13,8 @@ module pixel_Gen(
 	input [1:0] bottonRight,
 	input [2:0] state,
 	
-	input [6:0] xScore,
-	input [6:0] yScore,
+	input [9:0] xScore,
+	input [9:0] yScore,
 	
 	input selectedOption,
 	
@@ -65,6 +65,7 @@ Valores de juego
    localparam black   = 8'b00000000;
    localparam cyan    = 8'b11111000;
    localparam magenta = 8'b11000111;
+   localparam yellow  = 8'b00111111;
    
 //signal declaration
 reg [7:0] rgb_reg;
@@ -86,22 +87,9 @@ localparam ScoreTop = 40;
 
 
 //Parameters for the top msg
-localparam msgRight = 300;
+localparam msgRight = 200;
 localparam msgTop = 104;
-wire [7:0] MSG [0:12];
-assign MSG[0]  = "S";
-assign MSG[1]  = "T";
-assign MSG[2]  = "A";
-assign MSG[3]  = "R";
-assign MSG[4]  = "T";
-assign MSG[5]  = " ";
-assign MSG[6]  = "P";
-assign MSG[7]  = "L";
-assign MSG[8]  = "A";
-assign MSG[9]  = "Y";
-assign MSG[10] = "I";
-assign MSG[11] = "N";
-assign MSG[12] = "G";
+reg [7:0] MSG [0:12];
 
 //Parameters for the RESTART msg
 localparam restartmsgRight = 76;
@@ -149,6 +137,7 @@ localparam playCharPadding   =  10;
 //Checks that for a given pixel in the screen if it should be written
 always @(posedge pixel_tick) begin
 	if (video_on) begin
+		
 		//Xs Score, each character is of size 32
 		if((pixel_x >= (XsScoreRight)) && (pixel_x <= (XsScoreRight + 4*ScoreSize)) && (pixel_y >= ScoreTop) && (pixel_y <= (ScoreTop + ScoreSize))) begin
 			columnY = (pixel_y - ScoreTop) >> 2;//Includes Top position of the character and the expansion of the character
@@ -167,15 +156,15 @@ always @(posedge pixel_tick) begin
 					rgb_reg = black;//Otherwise it's black
 			end
 			else if ((pixel_x >= (XsScoreRight + 2*ScoreSize)) && (pixel_x <= (XsScoreRight + 3*ScoreSize))) begin//Msb from X's score
-				Character = xScore / 10;//Character to be drawn
-				if(row[7 -((pixel_x - (XsScoreRight + ScoreSize)) >> 2)])//Includes Left position of the character and the expansion of the character
+				Character = (xScore % 100) / 10;//Character to be drawn
+				if(row[7 -((pixel_x - (XsScoreRight + 2*ScoreSize)) >> 2)])//Includes Left position of the character and the expansion of the character
 					rgb_reg = blue;//Color to be drawn
 				else
 					rgb_reg = black;//Otherwise it's black
 			end
-			else if (pixel_x >= (XsScoreRight + 3*ScoreSize)) begin//Lsb from X's score
+			else if (pixel_x >= (XsScoreRight + 3*ScoreSize) ) begin//Msb from X's score
 				Character = xScore % 10;//Character to be drawn
-				if(row[7 -((pixel_x - (XsScoreRight + 2*ScoreSize)) >> 2)])//Includes Left position of the character and the expansion of the character
+				if(row[7 -((pixel_x - (XsScoreRight + ScoreSize)) >> 2)])//Includes Left position of the character and the expansion of the character
 					rgb_reg = blue;//Color to be drawn
 				else
 					rgb_reg = black;//Otherwise it's black
@@ -187,7 +176,7 @@ always @(posedge pixel_tick) begin
 		else if((pixel_x >= (YsScoreRight)) && (pixel_x <= (YsScoreRight + 4*ScoreSize)) && (pixel_y >= ScoreTop) && (pixel_y <= (ScoreTop + ScoreSize))) begin
 			columnY = (pixel_y - ScoreTop) >> 2;//Includes Top position of the character and the expansion of the character
 			if (pixel_x <= (YsScoreRight + ScoreSize)) begin//Y character from the score
-				Character = "Y";//Character to be drawn
+				Character = "O";//Character to be drawn
 				if(row[7 -((pixel_x - YsScoreRight) >> 2)])//Includes Left position of the character and the expansion of the character
 					rgb_reg = blue;//Color to be drawn
 				else
@@ -201,15 +190,15 @@ always @(posedge pixel_tick) begin
 					rgb_reg = black;//Otherwise it's black
 			end
 			else if ((pixel_x >= (YsScoreRight + 2*ScoreSize)) && (pixel_x <= (YsScoreRight + 3*ScoreSize))) begin//Msb from X's score
-				Character = xScore / 10;//Character to be drawn
+				Character = (yScore % 100) / 10;//Character to be drawn
 				if(row[7 -((pixel_x - (YsScoreRight + ScoreSize)) >> 2)])//Includes Left position of the character and the expansion of the character
 					rgb_reg = blue;//Color to be drawn
 				else
 					rgb_reg = black;//Otherwise it's black
 			end
-			else if (pixel_x >= (YsScoreRight + 3*ScoreSize)) begin//Lsb from X's score
-				Character = xScore % 10;//Character to be drawn
-				if(row[7 -((pixel_x - (YsScoreRight + 2*ScoreSize)) >> 2)])//Includes Left position of the character and the expansion of the character
+			else if (pixel_x >= (YsScoreRight + 3*ScoreSize)) begin//Msb from X's score
+				Character = yScore % 10;//Character to be drawn
+				if(row[7 -((pixel_x - (YsScoreRight + ScoreSize)) >> 2)])//Includes Left position of the character and the expansion of the character
 					rgb_reg = blue;//Color to be drawn
 				else
 					rgb_reg = black;//Otherwise it's black
@@ -218,95 +207,95 @@ always @(posedge pixel_tick) begin
 		
 		
 		//Message at the top of the screen, each character is of size 16
-		else if ((pixel_x >= restartmsgRight) && (pixel_x <= (restartmsgRight + 13*TextSize)) && (pixel_y >= msgTop) && (pixel_y <= (msgTop + TextSize))) begin
+		else if ((pixel_x >= msgRight) && (pixel_x <= (msgRight + 13*TextSize)) && (pixel_y >= msgTop) && (pixel_y <= (msgTop + TextSize))) begin
 			columnY = (pixel_y - msgTop) >> 1;//Includes Top position of the character and the expansion of the character 
-			if (pixel_x <= (restartmsgRight + 1*TextSize)) begin// 
+			if (pixel_x <= (msgRight + 1*TextSize)) begin// 
 				Character = MSG[0];//Character to be drawn 
-				if(row[7-((pixel_x - (restartmsgRight + 0*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
+				if(row[7-((pixel_x - (msgRight + 0*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
 					rgb_reg = blue;//Color to be drawn 
 				else
 					rgb_reg = black;//Otherwise it's black
 			end
-			else if ((pixel_x >= (restartmsgRight + 1*TextSize)) && (pixel_x <= (restartmsgRight + 2*TextSize))) begin// 
+			else if ((pixel_x >= (msgRight + 1*TextSize)) && (pixel_x <= (msgRight + 2*TextSize))) begin// 
 				Character = MSG[1];//Character to be drawn 
-				if(row[7-((pixel_x - (restartmsgRight + 1*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
+				if(row[7-((pixel_x - (msgRight + 1*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
 					rgb_reg = blue;//Color to be drawn 
 				else
 					rgb_reg = black;//Otherwise it's black
 			end
-			else if ((pixel_x >= (restartmsgRight + 2*TextSize)) && (pixel_x <= (restartmsgRight + 3*TextSize))) begin// 
+			else if ((pixel_x >= (msgRight + 2*TextSize)) && (pixel_x <= (msgRight + 3*TextSize))) begin// 
 				Character = MSG[2];//Character to be drawn 
-				if(row[7-((pixel_x - (restartmsgRight + 2*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
+				if(row[7-((pixel_x - (msgRight + 2*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
 					rgb_reg = blue;//Color to be drawn 
 				else
 					rgb_reg = black;//Otherwise it's black
 			end
-			else if ((pixel_x >= (restartmsgRight + 3*TextSize)) && (pixel_x <= (restartmsgRight + 4*TextSize))) begin// 
+			else if ((pixel_x >= (msgRight + 3*TextSize)) && (pixel_x <= (msgRight + 4*TextSize))) begin// 
 				Character = MSG[3];//Character to be drawn 
-				if(row[7-((pixel_x - (restartmsgRight + 3*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
+				if(row[7-((pixel_x - (msgRight + 3*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
 					rgb_reg = blue;//Color to be drawn 
 				else
 					rgb_reg = black;//Otherwise it's black
 			end
-			else if ((pixel_x >= (restartmsgRight + 4*TextSize)) && (pixel_x <= (restartmsgRight + 5*TextSize))) begin// 
+			else if ((pixel_x >= (msgRight + 4*TextSize)) && (pixel_x <= (msgRight + 5*TextSize))) begin// 
 				Character = MSG[4];//Character to be drawn 
-				if(row[7-((pixel_x - (restartmsgRight + 4*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
+				if(row[7-((pixel_x - (msgRight + 4*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
 					rgb_reg = blue;//Color to be drawn 
 				else
 					rgb_reg = black;//Otherwise it's black
 			end
-			else if ((pixel_x >= (restartmsgRight + 5*TextSize)) && (pixel_x <= (restartmsgRight + 6*TextSize))) begin// 
+			else if ((pixel_x >= (msgRight + 5*TextSize)) && (pixel_x <= (msgRight + 6*TextSize))) begin// 
 				Character = MSG[5];//Character to be drawn 
-				if(row[7-((pixel_x - (restartmsgRight + 5*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
+				if(row[7-((pixel_x - (msgRight + 5*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
 					rgb_reg = blue;//Color to be drawn 
 				else
 					rgb_reg = black;//Otherwise it's black
 			end
-			else if ((pixel_x >= (restartmsgRight + 6*TextSize)) && (pixel_x <= (restartmsgRight + 7*TextSize))) begin// 
+			else if ((pixel_x >= (msgRight + 6*TextSize)) && (pixel_x <= (msgRight + 7*TextSize))) begin// 
 				Character = MSG[6];//Character to be drawn 
-				if(row[7-((pixel_x - (restartmsgRight + 6*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
+				if(row[7-((pixel_x - (msgRight + 6*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
 					rgb_reg = blue;//Color to be drawn 
 				else
 					rgb_reg = black;//Otherwise it's black
 			end
-			else if ((pixel_x >= (restartmsgRight + 7*TextSize)) && (pixel_x <= (restartmsgRight + 8*TextSize))) begin// 
+			else if ((pixel_x >= (msgRight + 7*TextSize)) && (pixel_x <= (msgRight + 8*TextSize))) begin// 
 				Character = MSG[7];//Character to be drawn 
-				if(row[7-((pixel_x - (restartmsgRight + 7*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
+				if(row[7-((pixel_x - (msgRight + 7*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
 					rgb_reg = blue;//Color to be drawn 
 				else
 					rgb_reg = black;//Otherwise it's black
 			end
-			else if ((pixel_x >= (restartmsgRight + 8*TextSize)) && (pixel_x <= (restartmsgRight + 9*TextSize))) begin// 
+			else if ((pixel_x >= (msgRight + 8*TextSize)) && (pixel_x <= (msgRight + 9*TextSize))) begin// 
 				Character = MSG[8];//Character to be drawn 
-				if(row[7-((pixel_x - (restartmsgRight + 8*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
+				if(row[7-((pixel_x - (msgRight + 8*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
 					rgb_reg = blue;//Color to be drawn 
 				else
 					rgb_reg = black;//Otherwise it's black
 			end
-			else if ((pixel_x >= (restartmsgRight + 9*TextSize)) && (pixel_x <= (restartmsgRight + 10*TextSize))) begin// 
+			else if ((pixel_x >= (msgRight + 9*TextSize)) && (pixel_x <= (msgRight + 10*TextSize))) begin// 
 				Character = MSG[9];//Character to be drawn 
-				if(row[7-((pixel_x - (restartmsgRight + 9*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
+				if(row[7-((pixel_x - (msgRight + 9*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
 					rgb_reg = blue;//Color to be drawn 
 				else
 					rgb_reg = black;//Otherwise it's black
 			end
-			else if ((pixel_x >= (restartmsgRight + 10*TextSize)) && (pixel_x <= (restartmsgRight + 11*TextSize))) begin// 
+			else if ((pixel_x >= (msgRight + 10*TextSize)) && (pixel_x <= (msgRight + 11*TextSize))) begin// 
 				Character = MSG[10];//Character to be drawn 
-				if(row[7-((pixel_x - (restartmsgRight + 10*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
+				if(row[7-((pixel_x - (msgRight + 10*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
 					rgb_reg = blue;//Color to be drawn 
 				else
 					rgb_reg = black;//Otherwise it's black
 			end
-			else if ((pixel_x >= (restartmsgRight + 11*TextSize)) && (pixel_x <= (restartmsgRight + 12*TextSize))) begin// 
+			else if ((pixel_x >= (msgRight + 11*TextSize)) && (pixel_x <= (msgRight + 12*TextSize))) begin// 
 				Character = MSG[11];//Character to be drawn 
-				if(row[7-((pixel_x - (restartmsgRight + 11*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
+				if(row[7-((pixel_x - (msgRight + 11*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
 					rgb_reg = blue;//Color to be drawn 
 				else
 					rgb_reg = black;//Otherwise it's black
 			end
-			else if (pixel_x >= (restartmsgRight + 12*TextSize)) begin// 
+			else if (pixel_x >= (msgRight + 12*TextSize)) begin// 
 				Character = MSG[12];//Character to be drawn 
-				if(row[7-((pixel_x - (restartmsgRight + 12*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
+				if(row[7-((pixel_x - (msgRight + 12*TextSize)) >> 1)])//Includes Left position of the character and the expansion of the character 
 					rgb_reg = blue;//Color to be drawn 
 				else
 					rgb_reg = black;//Otherwise it's black
@@ -491,21 +480,22 @@ always @(posedge pixel_tick) begin
 				else 
 					rgb_reg = black;//Otherwise it's black 
 			end
-		end
-		
+		end		
 		else begin
-			if(selectedOption)//The current select option is Restart Match
-				if ((pixel_x >= resetmsgRight) && (pixel_x <= (resetmsgRight + 13*TextSize)) && (pixel_y >= (resetmsgTop + 20)) && (pixel_y <= (resetmsgTop + TextSize + 25)))// Bar under the text
-					rgb_reg = blue;//
-				else
-					rgb_reg = black;
-			else//The current selected option is Reset Score
-				if ((pixel_x >= resetmsgRight) && (pixel_x <= (resetmsgRight + 11*TextSize)) && (pixel_y >= (resetmsgTop + 20)) && (pixel_y <= (resetmsgTop + TextSize + 25)))// Bar under the text
-					rgb_reg = blue;//
-				else
-					rgb_reg = black;
-					
 			if(state < 3)begin//The game is in progress
+				MSG[0]  = "S";
+				MSG[1]  = "T";
+				MSG[2]  = "A";
+				MSG[3]  = "R";
+				MSG[4]  = "T";
+				MSG[5]  = " ";
+				MSG[6]  = "P";
+				MSG[7]  = "L";
+				MSG[8]  = "A";
+				MSG[9]  = "Y";
+				MSG[10] = "I";
+				MSG[11] = "N";
+				MSG[12] = "G";			
 				//Bars
 				if ((pixel_x >= (playBoardLeft + CharSpace)) && (pixel_x <= (playBoardLeft + CharSpace + playBoardBarWidth)) && (pixel_y >= playBoardTop) && (pixel_y <= (playBoardTop + 3*CharSpace + 2*playBoardBarWidth)))// First vertical Bar
 					rgb_reg = green;//
@@ -652,32 +642,58 @@ always @(posedge pixel_tick) begin
 					
 			end		
 			else if(state == 3) begin//Tie
-				if ((pixel_x >= 192) && (pixel_x <= 320) && (pixel_y >= 147) && (pixel_y <= 403) ) begin// 
+				MSG[0]  = " ";
+				MSG[1]  = "I";
+				MSG[2]  = "T";
+				MSG[3]  = "'";
+				MSG[4]  = "S";
+				MSG[5]  = " ";
+				MSG[6]  = "A";
+				MSG[7]  = " ";
+				MSG[8]  = "D";
+				MSG[9]  = "R";
+				MSG[10] = "A";
+				MSG[11] = "W";
+				MSG[12] = " ";
+				//This splits an X on the top side of the screen and a O on the button parte of the screen
+				if ((pixel_x >= 192) && (pixel_x <= 320) && (pixel_y >= 211) && (pixel_y <= 339) ) begin// 
 					Character = "X";//Character to be drawn 
-					columnY = (pixel_y - 147) >> 5;//Includes Top position of the character and the expansion of the character 
-					if(row[7 -((pixel_x - 192) >> 5)])//Includes Left position of the character and the expansion of the character 
-						rgb_reg = blue;//Color to be drawn 
+					columnY = (pixel_y - 211) >> 4;//Includes Top position of the character and the expansion of the character 
+					if(row[7 -((pixel_x - 192) >> 4)])//Includes Left position of the character and the expansion of the character 
+						rgb_reg = yellow;//Color to be drawn 
 					else 
 						rgb_reg = black;//Otherwise it's black 
 				end
-				else if ((pixel_x >= 320) && (pixel_x <= 448) && (pixel_y >= 147) && (pixel_y <= 403) ) begin// 
+				else if ((pixel_x >= 320) && (pixel_x <= 448) && (pixel_y >= 211) && (pixel_y <= 339) ) begin// 
 					Character = "O";//Character to be drawn 
-					columnY = (pixel_y - 147) >> 5;//Includes Top position of the character and the expansion of the character 
-					if(row[7 -((pixel_x - 192) >> 5)])//Includes Left position of the character and the expansion of the character 
-						rgb_reg = blue;//Color to be drawn 
+					columnY = (pixel_y - 211) >> 4;//Includes Top position of the character and the expansion of the character 
+					if(row[7 -((pixel_x - 320) >> 4)])//Includes Left position of the character and the expansion of the character 
+						rgb_reg = yellow;//Color to be drawn 
 					else 
 						rgb_reg = black;//Otherwise it's black 
 				end
 				else
 					rgb_reg = black;
 			end
-			
 			else if(state == 4) begin//X has won
+				MSG[0]  = " ";
+				MSG[1]  = " ";
+				MSG[2]  = "X";
+				MSG[3]  = " ";
+				MSG[4]  = "H";
+				MSG[5]  = "A";
+				MSG[6]  = "S";
+				MSG[7]  = " ";
+				MSG[8]  = "W";
+				MSG[9]  = "O";
+				MSG[10] = "N";
+				MSG[11] = " ";
+				MSG[12] = " ";
 				if ((pixel_x >= 192) && (pixel_x <= 448) && (pixel_y >= 147) && (pixel_y <= 403) ) begin// 
 					Character = "X";//Character to be drawn 
 					columnY = (pixel_y - 147) >> 5;//Includes Top position of the character and the expansion of the character 
 					if(row[7 -((pixel_x - 192) >> 5)])//Includes Left position of the character and the expansion of the character 
-						rgb_reg = blue;//Color to be drawn 
+						rgb_reg = yellow;//Color to be drawn 
 					else 
 						rgb_reg = black;//Otherwise it's black 
 				end
@@ -686,11 +702,24 @@ always @(posedge pixel_tick) begin
 			end
 			
 			else if(state == 5) begin//O has won
+				MSG[0]  = " ";
+				MSG[1]  = " ";
+				MSG[2]  = "O";
+				MSG[3]  = " ";
+				MSG[4]  = "H";
+				MSG[5]  = "A";
+				MSG[6]  = "S";
+				MSG[7]  = " ";
+				MSG[8]  = "W";
+				MSG[9]  = "O";
+				MSG[10] = "N";
+				MSG[11] = " ";
+				MSG[12] = " ";
 				if ((pixel_x >= 192) && (pixel_x <= 448) && (pixel_y >= 147) && (pixel_y <= 403) ) begin// 
 					Character = "O";//Character to be drawn 
 					columnY = (pixel_y - 147) >> 5;//Includes Top position of the character and the expansion of the character 
 					if(row[7 -((pixel_x - 192) >> 5)])//Includes Left position of the character and the expansion of the character 
-						rgb_reg = blue;//Color to be drawn 
+						rgb_reg = yellow;//Color to be drawn 
 					else 
 						rgb_reg = black;//Otherwise it's black 
 				end
@@ -706,6 +735,31 @@ always @(posedge pixel_tick) begin
 				columnY = pixel_y - (mousey - 4);//Includes Top position of the character and the expansion of the character 
 				if(row[7 -(pixel_x - (mousex - 4))])//Includes Left position of the character and the expansion of the character 
 					rgb_reg = white;
+			end
+			
+			if(selectedOption) begin//The current select option is Restart Match
+				if ((pixel_x >= 351) && (pixel_x <= 367) && (pixel_y >= 430) && (pixel_y <= 446))begin
+					
+					Character = 95;//Character to be drawn
+					columnY = (pixel_y - 430) >> 1;//Includes Top position of the character and the expansion of the character
+					if(row[7 -((pixel_x - 351) >> 1)])//Includes Left position of the character and the expansion of the character
+						rgb_reg = blue;//Color to be drawn
+					else
+						rgb_reg = black;//Otherwise it's black
+					
+				end
+			end
+			else begin//The current selected option is Reset Score
+				if ((pixel_x >= 60) && (pixel_x <= 76) && (pixel_y >= 430) && (pixel_y <= 446))begin
+					
+					Character = 95;//Character to be drawn
+					columnY = (pixel_y - 430) >> 1;//Includes Top position of the character and the expansion of the character
+					if(row[7 -((pixel_x - 60) >> 1)])//Includes Left position of the character and the expansion of the character
+						rgb_reg = blue;//Color to be drawn
+					else
+						rgb_reg = black;//Otherwise it's black
+					
+				end
 			end
 		
 		end

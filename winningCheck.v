@@ -2,7 +2,7 @@
 
 module WinChecker(
 	//State of each of the cells
-    input [1:0] topLeft,
+   input [1:0] topLeft,
 	input [1:0] topCenter,
 	input [1:0] topRight,
 	input [1:0] middleLeft,

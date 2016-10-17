@@ -14,3 +14,15 @@ NET "RGB[4]" LOC = "T6" | IOSTANDARD = "LVCMOS33";
 NET "RGB[5]" LOC = "V6" | IOSTANDARD = "LVCMOS33";
 NET "RGB[6]" LOC = "R7" | IOSTANDARD = "LVCMOS33";
 NET "RGB[7]" LOC = "T7" | IOSTANDARD = "LVCMOS33";
+
+//Fake mouse pins
+NET "upBtn"     LOC = "A8" | IOSTANDARD = "LVCMOS33";
+NET "downBtn"   LOC = "C9" | IOSTANDARD = "LVCMOS33";
+NET "leftBtn"   LOC = "C4" | IOSTANDARD = "LVCMOS33";
+NET "rightBtn"  LOC = "D9" | IOSTANDARD = "LVCMOS33";
+NET "actionBtn" LOC = "B8" | IOSTANDARD = "LVCMOS33";
+	
+//Fake Buttons
+NET "linksBtn"    LOC = "V9"  | IOSTANDARD = "LVCMOS33";
+NET "zentrumBtn"  LOC = "T9"  | IOSTANDARD = "LVCMOS33";
+NET "rechtsBtn"   LOC = "T10" | IOSTANDARD = "LVCMOS33";
