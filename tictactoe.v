@@ -65,8 +65,8 @@ Valores de juego
 */
 
 
-reg [2:0] estado_actual    = Tie;
-reg [2:0] estado_siguiente = Tie;
+reg [2:0] estado_actual    = START;
+reg [2:0] estado_siguiente = START;
 
 //1 is reset Score and 0 is restart Match
 reg selectedOption_reg = 0;

@@ -483,19 +483,52 @@ always @(posedge pixel_tick) begin
 		end		
 		else begin
 			if(state < 3)begin//The game is in progress
-				MSG[0]  = "S";
-				MSG[1]  = "T";
-				MSG[2]  = "A";
-				MSG[3]  = "R";
-				MSG[4]  = "T";
-				MSG[5]  = " ";
-				MSG[6]  = "P";
-				MSG[7]  = "L";
-				MSG[8]  = "A";
-				MSG[9]  = "Y";
-				MSG[10] = "I";
-				MSG[11] = "N";
-				MSG[12] = "G";			
+				if(state == 0)begin
+					MSG[0]  = "S";
+					MSG[1]  = "T";
+					MSG[2]  = "A";
+					MSG[3]  = "R";
+					MSG[4]  = "T";
+					MSG[5]  = " ";
+					MSG[6]  = "P";
+					MSG[7]  = "L";
+					MSG[8]  = "A";
+					MSG[9]  = "Y";
+					MSG[10] = "I";
+					MSG[11] = "N";
+					MSG[12] = "G";
+				end
+				else if(state == 1)begin
+					MSG[0]  = " ";
+					MSG[1]  = " ";
+					MSG[2]  = " ";
+					MSG[3]  = "X";
+					MSG[4]  = " ";
+					MSG[5]  = "T";
+					MSG[6]  = "U";
+					MSG[7]  = "R";
+					MSG[8]  = "N";
+					MSG[9]  = " ";
+					MSG[10] = " ";
+					MSG[11] = " ";
+					MSG[12] = " ";
+				end
+				else if(state == 2)begin
+					MSG[0]  = " ";
+					MSG[1]  = " ";
+					MSG[2]  = " ";
+					MSG[3]  = "O";
+					MSG[4]  = " ";
+					MSG[5]  = "T";
+					MSG[6]  = "U";
+					MSG[7]  = "R";
+					MSG[8]  = "N";
+					MSG[9]  = " ";
+					MSG[10] = " ";
+					MSG[11] = " ";
+					MSG[12] = " ";
+				end
+				
 				//Bars
 				if ((pixel_x >= (playBoardLeft + CharSpace)) && (pixel_x <= (playBoardLeft + CharSpace + playBoardBarWidth)) && (pixel_y >= playBoardTop) && (pixel_y <= (playBoardTop + 3*CharSpace + 2*playBoardBarWidth)))// First vertical Bar
 					rgb_reg = green;//
