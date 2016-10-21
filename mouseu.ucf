@@ -1,0 +1,30 @@
+# ==== Clock inputs (CLK) ===
+NET "clk" LOC = "V10" | IOSTANDARD = "LVCMOS33";
+
+# ==== PS/2 Mouse/Keyboard Port (PS2) ====
+	NET "ps2c" LOC = "L13" | IOSTANDARD = "LVCMOS33" | PULLUP;
+	NET "ps2d" LOC = "K14" | IOSTANDARD = "LVCMOS33" | PULLUP;
+	#NET "reset"LOC = "T5" | IOSTANDARD = "LVCMOS33";
+
+//Video Sincronization
+NET "vsync" LOC="P7" | IOSTANDARD = "LVCMOS33";
+NET "hsync" LOC="N6" | IOSTANDARD = "LVCMOS33";
+
+//Color control pins
+NET "RGB[0]" LOC = "U7" | IOSTANDARD = "LVCMOS33";
+NET "RGB[1]" LOC = "V7" | IOSTANDARD = "LVCMOS33";
+NET "RGB[2]" LOC = "N7" | IOSTANDARD = "LVCMOS33";
+NET "RGB[3]" LOC = "P8" | IOSTANDARD = "LVCMOS33";
+NET "RGB[4]" LOC = "T6" | IOSTANDARD = "LVCMOS33";
+NET "RGB[5]" LOC = "V6" | IOSTANDARD = "LVCMOS33";
+NET "RGB[6]" LOC = "R7" | IOSTANDARD = "LVCMOS33";
+NET "RGB[7]" LOC = "T7" | IOSTANDARD = "LVCMOS33";
+	
+//Buttons
+NET "linksBtn"    LOC = "C4"  | IOSTANDARD = "LVCMOS33";
+NET "zentrumBtn"  LOC = "B8"  | IOSTANDARD = "LVCMOS33";
+NET "rechtsBtn"   LOC = "D9" | IOSTANDARD = "LVCMOS33";
+
+//Mouse
+NET "ps2c" LOC = "L13" | IOSTANDARD = "LVCMOS33" | PULLUP;
+NET "ps2d" LOC = "K14" | IOSTANDARD = "LVCMOS33" | PULLUP;
