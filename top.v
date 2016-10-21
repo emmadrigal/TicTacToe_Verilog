@@ -1,22 +1,24 @@
 `timescale 1ns / 1ps
 
+module Top(
+	input clk,reset,
+	inout wire ps2d, ps2c,
+	//output wire mouseclick2,
 
-module top(
-	input clk,
-	input upBtn,
-	input downBtn,
-	input leftBtn,
-	input rightBtn,
-	input actionBtn,
-	
+	output reg [7:0] seg,
+	output reg [3:0] an,
+
 	input linksBtn,
 	input rechtsBtn,
 	input zentrumBtn,
-	
+
 	output wire [7:0] RGB,	
 	output hsync,output vsync
-    );
-
+);
+	 
+wire [9:0] px_reg;
+wire [9:0] py_reg;
+wire mouseclick2;
 
 // signal declaration
 wire video_on, pixel_tick;
@@ -43,41 +45,13 @@ wire [9:0] yScore;
 
 wire selectedOption;
 
-wire [9:0] mousex;
-wire [9:0] mousey;
-
-wire Up;
-wire Down;
-wire Left;
-wire Right;
-wire Center;
-
 wire Links;
 wire Rechts;
 wire Zentrum;
 
-debouncer DB1(.clk(clk), .PB(upBtn), .PB_state(Up));
-debouncer DB2(.clk(clk), .PB(downBtn), .PB_state(Down));
-debouncer DB3(.clk(clk), .PB(leftBtn), .PB_state(Left));
-debouncer DB4(.clk(clk), .PB(rightBtn), .PB_state(Right));
-debouncer DB5(.clk(clk), .PB(actionBtn), .PB_state(Center));
-
 debouncer DB6(.clk(clk), .PB(linksBtn), .PB_state(Links));
 debouncer DB7(.clk(clk), .PB(rechtsBtn), .PB_state(Rechts));
 debouncer DB8(.clk(clk), .PB(zentrumBtn), .PB_state(Zentrum));
-
-tmp_FakeMouse fakeMouse(
-	.clk(clk),
-	.upBtn(Up),
-	.downBtn(Down),
-	.leftBtn(Left),
-	.rightBtn(Right),
-	
-	.xPos(mousex),
-	.yPos(mousey)
-    );
-	
-
 
 TicTacToe gameLogic(
     .clk(clk),
@@ -86,9 +60,9 @@ TicTacToe gameLogic(
     .Boton_onoff(Zentrum),
 	
 	//input signals from the mouse
-	.mouseX(mousex),
-	.mouseY(mousey),
-	.mouseBotton(Center),
+	.mouseX(px_reg),
+	.mouseY(py_reg),
+	.mouseBotton(mouseclick2),
 	
 	//State of each of the cells
    .topLeft(topLeft),
@@ -129,8 +103,8 @@ pixel_Gen pixls(
 	
 	.selectedOption(selectedOption),
 	
-	.mousex(mousex),
-	.mousey(mousey),
+	.mousex(px_reg),
+	.mousey(py_reg),
 	
    .pixel_tick(pixel_tick),
 	.pixel_x(pixel_x),
@@ -144,5 +118,17 @@ vga_sync Sincronizador(.clk(clk),
 						.hsync(hsync), .vsync(vsync),
 						.video_on(video_on), .p_tick(pixel_tick),
 						.pixel_x(pixel_x), .pixel_y(pixel_y));
+	 
+
+	 // Instantiate the module
+mouse_led instance_name (
+    .clk(clk), 
+    .reset(reset), 
+    .ps2d(ps2d), 
+    .ps2c(ps2c), 
+    .px_reg(px_reg), 
+    .py_reg(py_reg), 
+    .mouseclick(mouseclick2)
+    );
 
 endmodule

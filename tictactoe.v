@@ -45,9 +45,9 @@ assign state = estado_actual;
 */
 localparam [2:0] START  = 0,//No play has been made, a message is displayed
                  XsTurn = 1,//Xs Current Turn
-				 OsTurn = 2,//Os Current Turn
-				 Tie    = 3,//The game has finished in a Tie between O & X
-				 XWins  = 4,//The game has been won by X
+					  OsTurn = 2,//Os Current Turn
+					  Tie    = 3,//The game has finished in a Tie between O & X
+					  XWins  = 4,//The game has been won by X
                  OWins  = 5;//The game has been won by O
 				 
 				 
@@ -138,6 +138,48 @@ always @(posedge mouseBotton)
 always @(posedge clk) begin
 	estado_actual <= estado_siguiente;
 	selectedOption <= selectedOption_reg;
+	
+	if(Xwins) begin
+			estado_siguiente = XWins;
+			topLeft      = 0;
+			topCenter    = 0;
+			topRight     = 0;
+			middleLeft   = 0;
+			middleCenter = 0;
+			middleRight  = 0;
+			bottonLeft   = 0;
+			bottonCenter = 0;
+			bottonRight  = 0;
+			Moves = 0;
+			xScore = xScore + 1;
+		end
+	else if(Owins) begin
+			estado_siguiente = OWins;
+			topLeft      = 0;
+			topCenter    = 0;
+			topRight     = 0;
+			middleLeft   = 0;
+			middleCenter = 0;
+			middleRight  = 0;
+			bottonLeft   = 0;
+			bottonCenter = 0;
+			bottonRight  = 0;
+			Moves = 0;
+			OScore = OScore + 1;
+		end
+	else if(Moves == 9 && !Xwins) begin
+			estado_siguiente = Tie;
+			topLeft      = 0;
+			topCenter    = 0;
+			topRight     = 0;
+			middleLeft   = 0;
+			middleCenter = 0;
+			middleRight  = 0;
+			bottonLeft   = 0;
+			bottonCenter = 0;
+			bottonRight  = 0;
+			Moves = 0;
+	end
 	
 	//Acts based on clicks from the mouse
 	if(!cambio_FinalizadoMouse) begin
@@ -284,48 +326,6 @@ always @(posedge clk) begin
 		
 		cambio_RealizadoMouse = cambio_SolicitadoMouse;//Records that the instruction was recieved
 	end
-	
-	if(Xwins) begin
-			estado_siguiente = XWins;
-			topLeft      = 0;
-			topCenter    = 0;
-			topRight     = 0;
-			middleLeft   = 0;
-			middleCenter = 0;
-			middleRight  = 0;
-			bottonLeft   = 0;
-			bottonCenter = 0;
-			bottonRight  = 0;
-			Moves = 0;
-			xScore = xScore + 1;
-		end
-		else if(Owins) begin
-			estado_siguiente = OWins;
-			topLeft      = 0;
-			topCenter    = 0;
-			topRight     = 0;
-			middleLeft   = 0;
-			middleCenter = 0;
-			middleRight  = 0;
-			bottonLeft   = 0;
-			bottonCenter = 0;
-			bottonRight  = 0;
-			Moves = 0;
-			OScore = OScore + 1;
-		end
-		else if(Moves == 9) begin
-			estado_siguiente = Tie;
-			topLeft      = 0;
-			topCenter    = 0;
-			topRight     = 0;
-			middleLeft   = 0;
-			middleCenter = 0;
-			middleRight  = 0;
-			bottonLeft   = 0;
-			bottonCenter = 0;
-			bottonRight  = 0;
-			Moves = 0;
-		end
 	
 	if(!cambio_FinalizadoONOFF) begin //Si se presiona el boton de On OFF
 		if(selectedOption) begin

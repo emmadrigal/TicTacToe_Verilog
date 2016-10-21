@@ -139,7 +139,7 @@ always @(posedge pixel_tick) begin
 	if (video_on) begin
 		
 		//Xs Score, each character is of size 32
-		if((pixel_x >= (XsScoreRight)) && (pixel_x <= (XsScoreRight + 4*ScoreSize)) && (pixel_y >= ScoreTop) && (pixel_y <= (ScoreTop + ScoreSize))) begin
+		if((pixel_x >= (XsScoreRight)) && (pixel_x <= (XsScoreRight + 5*ScoreSize)) && (pixel_y >= ScoreTop) && (pixel_y <= (ScoreTop + ScoreSize))) begin
 			columnY = (pixel_y - ScoreTop) >> 2;//Includes Top position of the character and the expansion of the character
 			if (pixel_x <= (XsScoreRight + ScoreSize)) begin//X character from the score
 				Character = "X";//Character to be drawn
@@ -156,13 +156,20 @@ always @(posedge pixel_tick) begin
 					rgb_reg = black;//Otherwise it's black
 			end
 			else if ((pixel_x >= (XsScoreRight + 2*ScoreSize)) && (pixel_x <= (XsScoreRight + 3*ScoreSize))) begin//Msb from X's score
+				Character = (xScore % 1000) / 100;//Character to be drawn
+				if(row[7 -((pixel_x - (XsScoreRight + 2*ScoreSize)) >> 2)])//Includes Left position of the character and the expansion of the character
+					rgb_reg = blue;//Color to be drawn
+				else
+					rgb_reg = black;//Otherwise it's black
+			end
+			else if ((pixel_x >= (XsScoreRight + 3*ScoreSize)) && (pixel_x <= (XsScoreRight + 4*ScoreSize))) begin//Msb from X's score
 				Character = (xScore % 100) / 10;//Character to be drawn
 				if(row[7 -((pixel_x - (XsScoreRight + 2*ScoreSize)) >> 2)])//Includes Left position of the character and the expansion of the character
 					rgb_reg = blue;//Color to be drawn
 				else
 					rgb_reg = black;//Otherwise it's black
 			end
-			else if (pixel_x >= (XsScoreRight + 3*ScoreSize) ) begin//Msb from X's score
+			else if (pixel_x >= (XsScoreRight + 4*ScoreSize) ) begin//Msb from X's score
 				Character = xScore % 10;//Character to be drawn
 				if(row[7 -((pixel_x - (XsScoreRight + ScoreSize)) >> 2)])//Includes Left position of the character and the expansion of the character
 					rgb_reg = blue;//Color to be drawn
@@ -173,7 +180,7 @@ always @(posedge pixel_tick) begin
 		
 		
 		//Ys Score, each character is of size 32
-		else if((pixel_x >= (YsScoreRight)) && (pixel_x <= (YsScoreRight + 4*ScoreSize)) && (pixel_y >= ScoreTop) && (pixel_y <= (ScoreTop + ScoreSize))) begin
+		else if((pixel_x >= (YsScoreRight)) && (pixel_x <= (YsScoreRight + 5*ScoreSize)) && (pixel_y >= ScoreTop) && (pixel_y <= (ScoreTop + ScoreSize))) begin
 			columnY = (pixel_y - ScoreTop) >> 2;//Includes Top position of the character and the expansion of the character
 			if (pixel_x <= (YsScoreRight + ScoreSize)) begin//Y character from the score
 				Character = "O";//Character to be drawn
@@ -190,13 +197,20 @@ always @(posedge pixel_tick) begin
 					rgb_reg = black;//Otherwise it's black
 			end
 			else if ((pixel_x >= (YsScoreRight + 2*ScoreSize)) && (pixel_x <= (YsScoreRight + 3*ScoreSize))) begin//Msb from X's score
+				Character = (yScore % 1000) / 100;//Character to be drawn
+				if(row[7 -((pixel_x - (YsScoreRight + ScoreSize)) >> 2)])//Includes Left position of the character and the expansion of the character
+					rgb_reg = blue;//Color to be drawn
+				else
+					rgb_reg = black;//Otherwise it's black
+			end
+			else if ((pixel_x >= (YsScoreRight + 3*ScoreSize)) && (pixel_x <= (YsScoreRight + 4*ScoreSize))) begin//Msb from X's score
 				Character = (yScore % 100) / 10;//Character to be drawn
 				if(row[7 -((pixel_x - (YsScoreRight + ScoreSize)) >> 2)])//Includes Left position of the character and the expansion of the character
 					rgb_reg = blue;//Color to be drawn
 				else
 					rgb_reg = black;//Otherwise it's black
 			end
-			else if (pixel_x >= (YsScoreRight + 3*ScoreSize)) begin//Msb from X's score
+			else if (pixel_x >= (YsScoreRight + 4*ScoreSize)) begin//Msb from X's score
 				Character = yScore % 10;//Character to be drawn
 				if(row[7 -((pixel_x - (YsScoreRight + ScoreSize)) >> 2)])//Includes Left position of the character and the expansion of the character
 					rgb_reg = blue;//Color to be drawn
